@@ -1,0 +1,1 @@
+please don't use sprites from walls.png somewhere else
