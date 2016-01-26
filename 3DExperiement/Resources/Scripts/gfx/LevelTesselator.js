@@ -118,4 +118,3 @@ function toRad(angle) {
     return angle * (Math.PI / 180);
 }
 module.exports = LevelTesselator;
-//# sourceMappingURL=LevelTesselator.js.map

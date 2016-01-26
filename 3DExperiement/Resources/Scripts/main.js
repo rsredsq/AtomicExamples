@@ -11,4 +11,3 @@ var Main = (function () {
 })();
 Main.main();
 module.exports = Main;
-//# sourceMappingURL=main.js.map

@@ -5,8 +5,7 @@
         "declaration": false,
         "noImplicitAny": false,
         "removeComments": true,
-        "moduleResolution": "classic",
-        "sourceMap": true
+        "moduleResolution": "classic"
     },
     "filesGlob": [
         "./TypeScript/**/*.ts"

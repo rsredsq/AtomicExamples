@@ -76,4 +76,3 @@ function QuatFromEuler(x, y, z) {
     return q;
 }
 module.exports = CameraController;
-//# sourceMappingURL=CameraController.js.map
