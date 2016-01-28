@@ -15,7 +15,6 @@ var LevelTesselator = (function () {
     }
     LevelTesselator.prototype.tesselate = function () {
         var tmxFile = Atomic.cache.getResource("TmxFile2D", "Level/TestLevel.tmx");
-        var wallsLayer = tmxFile.getLayer(0);
         this.levelGeometry.beginGeometry(0, Atomic.TRIANGLE_LIST);
         for (var i = 0; i < tmxFile.getNumLayers(); i++) {
             var layer = tmxFile.getLayer(i);

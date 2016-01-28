@@ -1,0 +1,5 @@
+<renderpath>
+    <command type="quad" tag="Dithering" vs="Dithering" ps="Dithering" output="viewport">
+        <texture unit="diffuse" name="viewport" />
+    </command>
+</renderpath>

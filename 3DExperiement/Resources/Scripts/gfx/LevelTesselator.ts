@@ -25,8 +25,7 @@ class LevelTesselator {
     
     tesselate() {
         var tmxFile:Atomic.TmxFile2D = <Atomic.TmxFile2D> Atomic.cache.getResource("TmxFile2D", "Level/TestLevel.tmx");
-        var wallsLayer:Atomic.TmxTileLayer2D = <Atomic.TmxTileLayer2D> tmxFile.getLayer(0);
-        
+            
         this.levelGeometry.beginGeometry(0, Atomic.TRIANGLE_LIST);
         
         for (let i = 0; i < tmxFile.getNumLayers(); i++) {
