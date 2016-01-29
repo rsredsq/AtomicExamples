@@ -1,32 +1,47 @@
 var gl_matrix_1 = require("gl-matrix");
-var TileWidth = 32;
-var TileHeight = 32;
-var ImageWidth = 64;
+var TileWidth = 16;
+var TileHeight = 16;
+var ImageWidth = 256;
 var ImageHeight = 256;
 var TileSize = 1;
 var LevelTesselator = (function () {
     function LevelTesselator() {
         this.matrix = gl_matrix_1.mat4.create();
         this.levelNode = Atomic.player.currentScene.getChild("LevelNode");
-        if (!this.levelNode)
+        if (!this.levelNode) {
+            console.log("Creating a new level node");
             this.levelNode = Atomic.player.currentScene.createChild("LevelNode");
+        }
+        this.levelNode.position = [0, 0, 0];
         this.levelGeometry = this.levelNode.getOrCreateComponent("CustomGeometry");
-        this.levelGeometry.setMaterial(Atomic.cache.getResource("Material", "Materials/LevelMaterial.material"));
     }
     LevelTesselator.prototype.tesselate = function () {
         var tmxFile = Atomic.cache.getResource("TmxFile2D", "Level/TestLevel.tmx");
-        this.levelGeometry.beginGeometry(0, Atomic.TRIANGLE_LIST);
+        this.levelGeometry.setNumGeometries(3);
         for (var i = 0; i < tmxFile.getNumLayers(); i++) {
             var layer = tmxFile.getLayer(i);
-            if (layer.getName() == "walls")
+            if (layer.getName() == "walls") {
+                this.levelGeometry.beginGeometry(0, Atomic.TRIANGLE_LIST);
                 this.tesselateWalls(layer);
-            if (layer.getName() == "floor")
+                this.levelGeometry.commit();
+            }
+            if (layer.getName() == "floor") {
+                this.levelGeometry.beginGeometry(1, Atomic.TRIANGLE_LIST);
                 this.tesselateFloorOrCeil(layer);
-            if (layer.getName() == "ceil")
+                this.levelGeometry.commit();
+            }
+            if (layer.getName() == "ceil") {
+                this.levelGeometry.beginGeometry(2, Atomic.TRIANGLE_LIST);
                 this.tesselateFloorOrCeil(layer, false);
+                this.levelGeometry.commit();
+            }
         }
-        this.levelGeometry.commit();
-        console.log("TOTAL VERTICES: " + this.levelGeometry.getNumVertices(0));
+        this.levelGeometry.setMaterial(Atomic.cache.getResource("Material", "Materials/LevelMaterial.material"));
+        var vertices = 0;
+        for (var i = 0; i < this.levelGeometry.getNumGeometries(); i++) {
+            vertices += this.levelGeometry.getNumVertices(i);
+        }
+        console.log("TOTAL VERTICES: " + vertices);
     };
     LevelTesselator.prototype.tesselateFloorOrCeil = function (floorLayer, floor) {
         if (floor === void 0) { floor = true; }
@@ -36,10 +51,10 @@ var LevelTesselator = (function () {
                 if (!tile)
                     continue;
                 if (floor) {
-                    this.addQuad([x * TileSize, 0.5, y * TileSize], [toRad(-90), 0, 0], tile.getGid() - 1);
+                    this.addQuad([x * TileSize, -0.5, y * TileSize], [toRad(90), 0, 0], tile.getGid() - 1);
                 }
                 else {
-                    this.addQuad([x * TileSize, -0.5, y * TileSize], [toRad(90), 0, 0], tile.getGid() - 1);
+                    this.addQuad([x * TileSize, 0.5, y * TileSize], [toRad(-90), 0, 0], tile.getGid() - 1);
                 }
             }
         }
@@ -98,18 +113,33 @@ var LevelTesselator = (function () {
         var ty = (Math.floor(tileId * TileWidth / ImageWidth) * TileHeight) / ImageHeight;
         var wx = TileWidth / ImageWidth;
         var wy = TileHeight / ImageHeight;
+        var v1 = [0.0, 0.0, 0.0];
+        var v2 = [0.0, 0.0, 0.0];
+        var normal = [0.0, 0.0, 0.0];
+        gl_matrix_1.vec3.cross(normal, gl_matrix_1.vec3.sub(v1, verts[1], verts[0]), gl_matrix_1.vec3.sub(v2, verts[2], verts[0]));
         this.levelGeometry.defineVertex(verts[0]);
-        this.levelGeometry.defineTexCoord([tx, ty + wy]);
-        this.levelGeometry.defineVertex(verts[1]);
-        this.levelGeometry.defineTexCoord([tx + wx, ty + wy]);
-        this.levelGeometry.defineVertex(verts[2]);
-        this.levelGeometry.defineTexCoord([tx + wx, ty]);
-        this.levelGeometry.defineVertex(verts[3]);
-        this.levelGeometry.defineTexCoord([tx + wx, ty]);
-        this.levelGeometry.defineVertex(verts[4]);
         this.levelGeometry.defineTexCoord([tx, ty]);
-        this.levelGeometry.defineVertex(verts[5]);
+        this.levelGeometry.defineNormal(normal);
+        gl_matrix_1.vec3.cross(normal, gl_matrix_1.vec3.sub(v1, verts[2], verts[1]), gl_matrix_1.vec3.sub(v2, verts[3], verts[1]));
+        this.levelGeometry.defineVertex(verts[1]);
+        this.levelGeometry.defineTexCoord([tx + wx, ty]);
+        this.levelGeometry.defineNormal(normal);
+        gl_matrix_1.vec3.cross(normal, gl_matrix_1.vec3.sub(v1, verts[3], verts[2]), gl_matrix_1.vec3.sub(v2, verts[4], verts[2]));
+        this.levelGeometry.defineVertex(verts[2]);
+        this.levelGeometry.defineTexCoord([tx + wx, ty + wy]);
+        this.levelGeometry.defineNormal(normal);
+        gl_matrix_1.vec3.cross(normal, gl_matrix_1.vec3.sub(v1, verts[4], verts[3]), gl_matrix_1.vec3.sub(v2, verts[5], verts[3]));
+        this.levelGeometry.defineVertex(verts[3]);
+        this.levelGeometry.defineTexCoord([tx + wx, ty + wy]);
+        this.levelGeometry.defineNormal(normal);
+        gl_matrix_1.vec3.cross(normal, gl_matrix_1.vec3.sub(v1, verts[5], verts[4]), gl_matrix_1.vec3.sub(v2, verts[0], verts[4]));
+        this.levelGeometry.defineVertex(verts[4]);
         this.levelGeometry.defineTexCoord([tx, ty + wy]);
+        this.levelGeometry.defineNormal(normal);
+        gl_matrix_1.vec3.cross(normal, gl_matrix_1.vec3.sub(v1, verts[0], verts[5]), gl_matrix_1.vec3.sub(v2, verts[1], verts[5]));
+        this.levelGeometry.defineVertex(verts[5]);
+        this.levelGeometry.defineTexCoord([tx, ty]);
+        this.levelGeometry.defineNormal(normal);
     };
     return LevelTesselator;
 })();

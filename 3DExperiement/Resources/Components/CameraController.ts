@@ -13,7 +13,8 @@ class CameraController extends Atomic.JSComponent {
     start() {
         this.yaw = 0;
         this.pitch = 0;
-        //Atomic.input.setMouseMode(Atomic.MM_WRAP);
+        
+        // Atomic.input.setMouseMode(Atomic.MM_WRAP);
     }
     
     update(delta) {
@@ -38,7 +39,7 @@ class CameraController extends Atomic.JSComponent {
         }
 
         this.yaw += mouseX * MOUSE_SENSITIVITY;
-        //this.pitch += mouseY * MOUSE_SENSITIVITY;
+        // this.pitch += mouseY * MOUSE_SENSITIVITY;
 
         if (this.pitch < -90) {
             this.pitch = -90;
