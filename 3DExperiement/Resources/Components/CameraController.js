@@ -14,6 +14,7 @@ var CameraController = (function (_super) {
     CameraController.prototype.start = function () {
         this.yaw = 0;
         this.pitch = 0;
+        Atomic.input.setMouseMode(Atomic.MM_RELATIVE);
     };
     CameraController.prototype.update = function (delta) {
         var forward = false;
@@ -35,6 +36,7 @@ var CameraController = (function (_super) {
             right = true;
         }
         this.yaw += mouseX * MOUSE_SENSITIVITY;
+        this.pitch += mouseY * MOUSE_SENSITIVITY;
         if (this.pitch < -90) {
             this.pitch = -90;
         }
@@ -54,6 +56,9 @@ var CameraController = (function (_super) {
         }
         if (right) {
             this.node.translate([speed, 0.0, 0.0]);
+        }
+        if (Atomic.input.getKeyPress(Atomic.KEY_ESC) && Atomic.input.getMouseMode() == Atomic.MM_RELATIVE) {
+            Atomic.input.setMouseMode(Atomic.MM_ABSOLUTE);
         }
     };
     return CameraController;

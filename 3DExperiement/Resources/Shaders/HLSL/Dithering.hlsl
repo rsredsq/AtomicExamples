@@ -3,7 +3,7 @@
 #include "Transform.hlsl"
 #include "ScreenPos.hlsl"
 
-const static float RGBSize = 64.0;
+const static float RGBSize = 16.0;
 const static float ResDivisorX = 12.0;
 const static float ResDivisorY = 6.0;
 
@@ -23,7 +23,7 @@ float bayer4x4(float2 uvScreenSpace) {
     float4(1,9,3,11),
     float4(13,5,15,7),
     float4(4,12,2,10),
-    float4(16,8,14,6)) / 16.0;
+    float4(16,8,14,6)) / 128.0;
     
     int bayerIndex = int(bayerCoord.x + bayerCoord.y * 4.0);
     if (bayerIndex == 0) return bayerMat[0][0];
@@ -64,7 +64,7 @@ void PS(float2 iScreenPos : TEXCOORD0, out float4 oColor : OUTCOLOR0) {
     
     float3 dc = Sample2D(DiffMap, uvPixellated / resolution).rgb;
     
-    dc += (bayer4x4(fragCoord) - 0.5) * quantizationPeriod;
+    dc += (bayer4x4(fragCoord)) * quantizationPeriod;
     
     dc = float3(quantize(dc.r, quantizationPeriod.r), quantize(dc.g, quantizationPeriod.g), quantize(dc.b, quantizationPeriod.b));
 
