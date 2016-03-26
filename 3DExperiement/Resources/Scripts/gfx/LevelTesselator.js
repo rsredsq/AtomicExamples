@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -43,7 +44,7 @@ var LevelTesselator = (function (_super) {
         for (var i = 0; i < this.levelGeometry.getNumGeometries(); i++) {
             vertices += this.levelGeometry.getNumVertices(i);
         }
-        console.log("TOTAL VERTICES: " + vertices);
+        console.log("Total vertices: " + vertices);
     };
     LevelTesselator.prototype.tesselateFloorOrCeil = function (floorLayer, floor) {
         if (floor === void 0) { floor = true; }
@@ -87,5 +88,5 @@ var LevelTesselator = (function (_super) {
         }
     };
     return LevelTesselator;
-})(Tesselator);
+}(Tesselator));
 module.exports = LevelTesselator;

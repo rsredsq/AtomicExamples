@@ -23,9 +23,6 @@ class ItemRendererComponent extends Atomic.JSComponent {
     }
     
     update(delta) {
-        // this.node.yaw(delta * 10);
-        // this.node.roll(delta * 80);
-        // this.node.pitch(delta * 10);
     }
     
 }

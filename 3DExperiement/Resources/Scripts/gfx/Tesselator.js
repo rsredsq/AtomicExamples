@@ -1,3 +1,4 @@
+"use strict";
 var gl_matrix_1 = require("gl-matrix");
 var tempMatrix;
 var TileWidth = 16;
@@ -92,5 +93,5 @@ var Tesselator = (function () {
         tempMatrix = gl_matrix_1.mat4.create();
     })();
     return Tesselator;
-})();
+}());
 module.exports = Tesselator;

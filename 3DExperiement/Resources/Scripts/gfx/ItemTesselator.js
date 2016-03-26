@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -61,5 +62,5 @@ var ItemTesselator = (function (_super) {
     };
     ItemTesselator.itemsImage = Atomic.cache.getResource("Image", "Level/items.png");
     return ItemTesselator;
-})(Tesselator);
+}(Tesselator));
 module.exports = ItemTesselator;

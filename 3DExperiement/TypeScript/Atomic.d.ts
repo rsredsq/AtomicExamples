@@ -1,5 +1,8 @@
-//Atomic TypeScript Definitions
+//////////////////////////////////////////////////////////
+// IMPORTANT: THIS FILE IS GENERATED, CHANGES WILL BE LOST
+//////////////////////////////////////////////////////////
 
+// Atomic TypeScript Definitions
 
 declare module Atomic {
 
@@ -1559,6 +1562,44 @@ declare module Atomic {
       sendEvent(eventType:string, data?:Object);
       subscribeToEvent(eventType:string, callback:(data:any)=>void);
       subscribeToEvent(sender:AObject, eventType:string, callback:(data:any)=>void);
+
+   }
+
+   export class Time extends AObject {
+
+      timerPeriod: number;
+      frameNumber: number;
+      timeStep: number;
+      elapsedTime: number;
+      systemTime: number;
+      timeSinceEpoch: number;
+      timeStamp: string;
+
+      // Construct.
+      constructor();
+
+      // Begin new frame, with (last) frame duration in seconds and send frame start event.
+      beginFrame(timeStep: number): void;
+      // End frame. Increment total time and send frame end event.
+      endFrame(): void;
+      // Set the low-resolution timer period in milliseconds. 0 resets to the default period.
+      setTimerPeriod(mSec: number): void;
+      // Return frame number, starting from 1 once BeginFrame() is called for the first time.
+      getFrameNumber(): number;
+      // Return current frame timestep as seconds.
+      getTimeStep(): number;
+      // Return current low-resolution timer period in milliseconds.
+      getTimerPeriod(): number;
+      // Return elapsed time from program start as seconds.
+      getElapsedTime(): number;
+      // Get system time as milliseconds.
+      static getSystemTime(): number;
+      // Get system time as seconds since 1.1.1970.
+      static getTimeSinceEpoch(): number;
+      // Get a date/time stamp as a string.
+      static getTimeStamp(): string;
+      // Sleep for a number of milliseconds.
+      static sleep(mSec: number): void;
 
    }
 
@@ -3274,7 +3315,7 @@ declare module Atomic {
       pixelUVOffset: Vector2;
       maxBones: number;
       currentMonitor: number;
-      monitorsNumber: number;
+      numMonitors: number;
       maximized: boolean;
 
       // Construct.
@@ -3531,9 +3572,11 @@ declare module Atomic {
       // Return the current monitor number
       getCurrentMonitor(): number;
       // Return the available monitors number
-      getMonitorsNumber(): number;
+      getNumMonitors(): number;
       // Return true if window is maximized
       getMaximized(): boolean;
+      // Return monitor resolution
+      getMonitorResolution(monitorId: number): IntVector2;
 
    }
 
@@ -7220,11 +7263,15 @@ declare module Atomic {
 
       squeezable: boolean;
       emulationButton: number;
+      urlEnabled: boolean;
 
       constructor(createWidget?: boolean);
 
+      // If squeezable it may shrink to width 0
       setSqueezable(value: boolean): void;
       setEmulationButton(button: number): void;
+      // for example a http:// link will open the default browser
+      setURLEnabled(enabled: boolean): void;
       onClick: () => void;
 
    }
@@ -7532,6 +7579,7 @@ declare module Atomic {
       // Set to true if the content should adapt to the available size of this container when it's larger than the preferred size.
       setAdaptContentSize(adapt: boolean): void;
       getAdaptContentSize(): boolean;
+      scrollTo(x: number, y: number): void;
 
    }
 
@@ -7626,12 +7674,14 @@ declare module Atomic {
       numPages: number;
       currentPage: number;
       currentPageWidget: UIWidget;
+      tabLayout: UILayout;
 
       constructor(createWidget?: boolean);
 
       getNumPages(): number;
       setCurrentPage(page: number): void;
       getCurrentPageWidget(): UIWidget;
+      getTabLayout(): UILayout;
 
    }
 
@@ -7755,6 +7805,8 @@ declare module Atomic {
       setShortened(shortened: boolean): void;
       getTooltip(): string;
       setTooltip(text: string): void;
+      enable(): void;
+      disable(): void;
 
    }
 

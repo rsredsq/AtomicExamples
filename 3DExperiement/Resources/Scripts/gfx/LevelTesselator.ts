@@ -57,7 +57,8 @@ class LevelTesselator extends Tesselator {
         for (let i = 0; i < this.levelGeometry.getNumGeometries(); i++) {
             vertices += this.levelGeometry.getNumVertices(i);
         }
-        console.log("TOTAL VERTICES: " + vertices);
+        
+        console.log("Total vertices: " + vertices);
     }
     
     //TODO remove the floor tiles from the places where wall tiles already exists
