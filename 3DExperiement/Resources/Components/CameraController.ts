@@ -48,7 +48,6 @@ class CameraController extends Atomic.JSComponent {
             }
             this.walking = true;   
         }).onUpdate((object?:any) => {
-            //TODO: prevent twitch due to headbob
             this.headbob = Math.abs(Math.sin(this.ticks)*0.2);
             this.node.position = [this.x, this.headbob, this.y];
         }).onComplete((object?:any) => {
@@ -65,11 +64,12 @@ class CameraController extends Atomic.JSComponent {
             }
             this.walking = true;
         }).onUpdate((object?:any) => {
-            this.node.position = [this.x, 0, this.y];
+            this.headbob = Math.abs(Math.sin(this.ticks)*0.2);
+            this.node.position = [this.x, this.headbob, this.y];
         }).onComplete((object?:any) => {
             this.walking = false;
             if (Atomic.input.getKeyDown(Atomic.KEY_S)) {
-                this.forwardTween.to({x: this.x - Math.sin(utils.radians(this.yaw)), y: this.y - Math.cos(utils.radians(this.yaw))}, WALKING_SPEED).start();
+                this.backwardTween.to({x: this.x - Math.sin(utils.radians(this.yaw)), y: this.y - Math.cos(utils.radians(this.yaw))}, WALKING_SPEED).start();
             }
         });
         
@@ -97,7 +97,8 @@ class CameraController extends Atomic.JSComponent {
     }
     
     update(delta) {
-        this.ticks += delta;
+        if(this.walking)
+            this.ticks += delta;
         
         if (this.walking || this.rotating) return;
         

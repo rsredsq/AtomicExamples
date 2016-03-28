@@ -45,11 +45,12 @@ var CameraController = (function (_super) {
             }
             _this.walking = true;
         }).onUpdate(function (object) {
-            _this.node.position = [_this.x, 0, _this.y];
+            _this.headbob = Math.abs(Math.sin(_this.ticks) * 0.2);
+            _this.node.position = [_this.x, _this.headbob, _this.y];
         }).onComplete(function (object) {
             _this.walking = false;
             if (Atomic.input.getKeyDown(Atomic.KEY_S)) {
-                _this.forwardTween.to({ x: _this.x - Math.sin(utils.radians(_this.yaw)), y: _this.y - Math.cos(utils.radians(_this.yaw)) }, WALKING_SPEED).start();
+                _this.backwardTween.to({ x: _this.x - Math.sin(utils.radians(_this.yaw)), y: _this.y - Math.cos(utils.radians(_this.yaw)) }, WALKING_SPEED).start();
             }
         });
         this.leftTween = new TWEEN_1.Tween(this).to({ yaw: this.yaw - 90 }, ROTATION_SPEED).onStart(function (object) {
@@ -74,7 +75,8 @@ var CameraController = (function (_super) {
         });
     };
     CameraController.prototype.update = function (delta) {
-        this.ticks += delta;
+        if (this.walking)
+            this.ticks += delta;
         if (this.walking || this.rotating)
             return;
         if (Atomic.input.getKeyPress(Atomic.KEY_W)) {
