@@ -21,16 +21,17 @@ var CameraController = (function (_super) {
         this.y = this.node.position[2];
         this.rotating = this.walking = false;
         this.ticks = 0;
-        this.headbob = 0;
+        this.headbob = this.calculateHeadbob();
+        this.node.position = [this.x, this.headbob, this.y];
         Atomic.input.setMouseMode(Atomic.MM_RELATIVE);
         this.forwardTween = new TWEEN_1.Tween(this).to({ x: this.x + Math.sin(utils.radians(this.yaw)), y: this.y + Math.cos(utils.radians(this.yaw)) }, WALKING_SPEED).onStart(function (object, valuesEnd) {
-            if (!_this.isFree(valuesEnd.x, valuesEnd.y)) {
+            if (!_this.isFree(Math.round(valuesEnd.x), Math.round(valuesEnd.y))) {
                 _this.forwardTween.stop();
                 return;
             }
             _this.walking = true;
         }).onUpdate(function (object) {
-            _this.headbob = Math.abs(Math.sin(_this.ticks) * 0.2);
+            _this.headbob = _this.calculateHeadbob();
             _this.node.position = [_this.x, _this.headbob, _this.y];
         }).onComplete(function (object) {
             _this.walking = false;
@@ -39,13 +40,13 @@ var CameraController = (function (_super) {
             }
         });
         this.backwardTween = new TWEEN_1.Tween(this).to({ x: this.x - Math.sin(utils.radians(this.yaw)), y: this.y - Math.cos(utils.radians(this.yaw)) }, WALKING_SPEED).onStart(function (object, valuesEnd) {
-            if (!_this.isFree(valuesEnd.x, valuesEnd.y)) {
+            if (!_this.isFree(Math.round(valuesEnd.x), Math.round(valuesEnd.y))) {
                 _this.backwardTween.stop();
                 return;
             }
             _this.walking = true;
         }).onUpdate(function (object) {
-            _this.headbob = Math.abs(Math.sin(_this.ticks) * 0.2);
+            _this.headbob = _this.calculateHeadbob();
             _this.node.position = [_this.x, _this.headbob, _this.y];
         }).onComplete(function (object) {
             _this.walking = false;
@@ -106,6 +107,9 @@ var CameraController = (function (_super) {
             }
         }
         return wallsLayer.getTile(x, y) == null;
+    };
+    CameraController.prototype.calculateHeadbob = function () {
+        return 0.1 + Math.abs(Math.sin(this.ticks * 5) * 0.1);
     };
     return CameraController;
 }(Atomic.JSComponent));

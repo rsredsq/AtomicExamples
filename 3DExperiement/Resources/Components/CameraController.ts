@@ -37,18 +37,20 @@ class CameraController extends Atomic.JSComponent {
         this.rotating = this.walking = false;
         
         this.ticks = 0;
-        this.headbob = 0
+        this.headbob = this.calculateHeadbob();
+        
+        this.node.position = [this.x, this.headbob, this.y];
         
         Atomic.input.setMouseMode(Atomic.MM_RELATIVE);
         
         this.forwardTween = new Tween(this).to({x: this.x + Math.sin(utils.radians(this.yaw)), y: this.y + Math.cos(utils.radians(this.yaw))}, WALKING_SPEED).onStart((object?: any, valuesEnd?:any) => {
-            if (!this.isFree(valuesEnd.x, valuesEnd.y)) {
+            if (!this.isFree(Math.round(valuesEnd.x), Math.round(valuesEnd.y))) {
                 this.forwardTween.stop();
                 return;
             }
             this.walking = true;   
         }).onUpdate((object?:any) => {
-            this.headbob = Math.abs(Math.sin(this.ticks)*0.2);
+            this.headbob = this.calculateHeadbob();
             this.node.position = [this.x, this.headbob, this.y];
         }).onComplete((object?:any) => {
             this.walking = false;
@@ -58,13 +60,13 @@ class CameraController extends Atomic.JSComponent {
         });
         
         this.backwardTween = new Tween(this).to({x: this.x - Math.sin(utils.radians(this.yaw)), y: this.y - Math.cos(utils.radians(this.yaw))}, WALKING_SPEED).onStart((object?: any, valuesEnd?:any) => {
-            if (!this.isFree(valuesEnd.x, valuesEnd.y)) {
+            if (!this.isFree(Math.round(valuesEnd.x), Math.round(valuesEnd.y))) {
                 this.backwardTween.stop();
                 return;
             }
             this.walking = true;
         }).onUpdate((object?:any) => {
-            this.headbob = Math.abs(Math.sin(this.ticks)*0.2);
+            this.headbob = this.calculateHeadbob();
             this.node.position = [this.x, this.headbob, this.y];
         }).onComplete((object?:any) => {
             this.walking = false;
@@ -121,7 +123,7 @@ class CameraController extends Atomic.JSComponent {
     }
     
     //TODO: reimplement that function, because it's incredibly unoptimized!
-    isFree(x, y){
+    isFree(x, y) {
         var tmxFile:Atomic.TmxFile2D = <Atomic.TmxFile2D> Atomic.cache.getResource("TmxFile2D", "Level/TestLevel.tmx");
         var wallsLayer:Atomic.TmxTileLayer2D;
         for(let i = 0; i < tmxFile.getNumLayers(); i++) {
@@ -132,6 +134,10 @@ class CameraController extends Atomic.JSComponent {
             }
         }
         return wallsLayer.getTile(x, y) == null;
+    }
+    
+    calculateHeadbob() {
+        return 0.1+Math.abs(Math.sin(this.ticks*5)*0.1);
     }
     
 }
